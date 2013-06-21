@@ -1,0 +1,41 @@
+\documentclass[justified]{tufte-book}
+
+% configuration and commands
+\input{./confs/packs}
+\input{./confs/commands}
+\input{./confs/tweaks}
+
+\input{./pretext/details}
+\makeindex
+
+\begin{document}
+    %\maketitle
+    %pretextual area  
+    %\input{./pretext/paginatitulo}
+    \input{./pretext/folhaderosto}
+    \include{./pretext/resumo}
+    \include{./pretext/abstract}
+    \include{./pretext/prologo}
+    %\listoffigures
+    \tableofcontents
+
+    %body of chapters
+    \include{./text/introduction}
+    \include{./text/empirical}
+    \include{./text/model}
+    \include{./text/results}
+    \include{./text/discution}
+
+    %body of appendices
+    \appendix
+        \include{./text/perceptron} 
+        \include{./text/apbayesiano}
+        \include{./text/q_moral}
+
+    \backmatter
+    %bibliography 
+    %{abbrvnat, unsrtnat, plainnat, plain }
+    \bibliographystyle{plain}
+    \bibliography{Tese}
+
+\end{document}

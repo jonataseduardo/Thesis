@@ -1,0 +1,103 @@
+
+\section{Aplicação do Modelo de Opinião aos Dados}
+
+
+O modelo de dinâmica de opinião discutido na seção
+\ref{sec:perceptrolandia} é capaz de mimetizar todas as características
+do comportamento humano evidenciados na seção anterior. Primeiramente
+consideraremos que cada uma das $5$ componentes do vetor de opinião
+$\mathbf{J}_i$ de nossos agentes representam uma das componentes da matriz
+moral. Como em nosso modelo os agentes desconhecem o seu próprio vetor
+de opinião isso pode representar o fato de que as pessoas expressam a sua
+opinião de forma intuicionista.
+
+A tendência em entrar em conformidade é bem representada pelo procedimento
+de aprendizado dos agentes, de forma que a energia de interação entre
+eles representa um custo psicológico que faz com que as pessoas entrem em
+concordância. No entanto, como já é de praxe em sistemas termodinâmicos
+podemos inferir essa informação usando outra grandeza termodinâmica, no
+caso do nosso modelo, essa grandeza é o parâmetro $\alpha$ que representa
+uma pressão entre as pessoas para que elas entrem em conformidade.
+
+Os diferentes tipos de estratégias cognitiva dos indivíduos são
+mimetizados pelo parâmetro $\delta$ na função de aprendizado dos agentes
+(\ref{fig:fdelta}). Como vimos na sessão anterior, pessoas liberais tem
+uma maior a resposta a novidade que pessoas conservadoras, essa tendência
+de resposta a complexidade é mimetizada pela diferença  $ 1 -\delta $
+na função de modulação, enquanto a grandeza $ \delta$ representa a
+tendência corroborativa de pessoas conservadoras. Portanto, no nosso modelo,
+esperamos que agentes sejam menos conservadores quanto menor for o valor do
+parâmetro $\delta$.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.5]{Moral/fdelta}
+  \end{center}
+  \caption{Função de Modulação. Quanto menor o valor de $\delta$ mais liberal é o agente.}
+  \label{fig:fdelta}
+\end{figure}
+
+Obtivemos através do Jonathan Haidt as respostas dos questionários de
+aproximadamente 14000 pessoas. Nesses dados constam as respostas das 32,
+perguntas juntamente com o termos da matriz moral e filiação política
+para cada um dos indivíduos. Usando o método \textit{Sorting Points
+Into Nighborhood-SPIN} \cite{SPIN} podemos visualizar as características
+geométricas da distribuição desses dados. A ideia desse método é
+mudar a ordem de apresentação dos dados na matriz de distância de forma
+que dados que são mais semelhantes sejam apresentados mais próximos uns
+dos outros. Nas figuras \textbf{A} e \textbf{C} de \ref{fig:haidt} são
+apresentadas respectivamente a matriz de distância entre os indivíduos para
+as respostas das 32 perguntas do questionário e para as componentes de suas
+respectivas matrizes morais. O resultado da aplicação do método SPIN nos
+dados fornecidos pelo Jonathan Haidt podem ser vistos nas figuras \textbf{B}
+e \textbf{D} de \ref{fig:haidt}. Quanto mais azul, mais parecidos são os
+dados, e vermelho o contrário. Ambas as figuras apresentam o mesmo tipo de
+padrão, que é relativo a dados que têm simetria linear.
+
+\begin{figure}
+\centering \includegraphics[scale = 1]{Moral/spin} \caption{Figura retirada
+de \cite{exPlosOne} com as matrizes de distâncias, antes e depois de
+aplicarmos o método SPIN respectivamente, para os dados com as respostas
+das 32 perguntas do questionário (figuras \textbf{A} e \textbf{B}) e com
+a matriz de distâncias das 5 componentes da matriz moral dos indivíduos
+(figuras \textbf{C} e \textbf{D}). Quanto mais azul mais parecidos são os
+dados e vermelho o contrário.} \label{fig:haidt}
+\end{figure}
+
+Em nosso modelo, analisamos o cenário no qual os agentes discutem um único
+assunto $\mathbf{Z}$ em todas as rodadas da dinâmica, de forma que no
+equilíbrio termodinâmico os vetores dos agentes estão organizados ao redor
+desse assunto. Chamaremos de \textit{zeitgeist} esse assunto $\mathbf{Z}$,
+pois ele é o tema central de todas as discussões da sociedade, e pode ser
+encontrado a partir da média do vetor de opinião de todos os indivíduos da
+sociedade no estado de equilíbrio. Para os dados reais, o \textit{zeitgeist}
+é definido como a média das matrizes morais dos indivíduos conservadores
+como foi proposto em \cite{Caticha2009a}.
+
+Com isso, podemos construir os histogramas dos overlaps entre as matrizes
+morais dos indivíduos com o \textit{zeitgeist} $P(m_z)$. Esse tipo de
+histograma pode ser feito selecionado os indivíduos com mesmas filiação
+política. Esse procedimento equivale a encontrarmos as dimensões morais
+efetivas desse conjunto de indivíduos. Na figura \ref{fig:HCaticha}  Na
+figura \textbf{a} os histogramas da dimensão efetiva $m_z$ para filiação
+política $p.a = 1$ até $6$. Em vermelho são apresentados os histogramas
+obtidos através da simulação do modelo com $K=400$ agentes para $\alpha =
+8$ numa rede Watts-Strogatz  diferentes estratégias cognitivas. Na figura
+\textbf{b} são apresentados a relação entre filiação política e a
+estratégia cognitiva para diferentes valores de $\alpha$. Observamos assim
+um ótimo acordo qualitativo entre os dados obtidos através do questionário
+do Jonathan Haidt e os dados obtidos a partir da simulação do modelo.
+
+  
+
+
+\begin{figure}
+\centering \includegraphics[width = \textwidth]{Moral/Hcaticha} \caption{Figura
+retirada de \cite{exPlosOne}. Na figura \textbf{a} são apresentados os
+histogramas da dimensão efetiva $m_z$ para filiação política $p.a = 1$
+até $6$. Em vermelho são apresentados os histogramas obtidos através da
+simulação do modelo com $K=400$ agentes para $\alpha = 8$ e diferentes
+estratégias cognitivas. Na figura \textbf{b} são apresentados a relação
+entre filiação política e a estratégia cognitiva para diferentes valores
+de $\alpha$.} \label{fig:HCaticha}
+\end{figure}

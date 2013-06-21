@@ -1,0 +1,551 @@
+\chapter{Aprendizado Bayesiano} %#{{{1
+\label{chap:apbayes}
+
+\begin{epigraphs}
+\qitem{Probability theory is nothing but common sense reduced to calculation.}
+{\---- \textsc{Pierre-Simon Laplace,1749–1827}}
+\end{epigraphs}
+
+\section{Probabilidade} %#{{{2
+
+Ainda hoje, o significado ou interpretação da probabilidade é um tema
+de grande debate acadêmico\cited{CatichaA2012}. A interpretação mais
+comum é a \textit{frequentista} onde a probabilidade de um evento deve
+ser calculada de maneira experimental através da razão do número de
+vezes que o evento foi observado pelo número total de tentativas ou
+experimentos. Essa interpretação tem um grande apelo e é considerada por
+muitos como uma interpretação \textit{objetiva} pois a probabilidade de um
+evento ocorrer nada tem haver com o observador. Apesar de a primeira vista
+essa interpretação ter um grande apelo científico, ela não é totalmente
+livre de controvérsias  pois deixa algumas dúvidas a respeito da natureza
+da aleatoriedade. Por exemplo, é possível calcular a probabilidade de eventos
+não reprodutíveis como a probabilidade de existir vida em marte ou mesmo
+de fazer sol amanhã?  Além disso, qual é o grau de precisão necessário
+para se dizer que um evento é reprodutível\footnote{Podemos nos perguntar agora
+o quanto a interpretação frequentista da probabilidade é objetiva.}?
+
+Já a interpretação \textit{Bayesiana} diz que a probabilidade deve
+representar o grau de certeza ou a crença de que uma proposição\footnote{Um
+exemplo de proposição é: O evento $A$ ocorreu.} é verdadeira. Apesar
+dessa interpretação ter se tornado mais popular somente nas últimas décadas
+ela remonta a Bernoulli e Laplace. De fato seguindo essa tradição de
+pensamento, o físico americano Richard T. Cox mostrou em 1946 que seguindo
+alguns \textit{critérios de coerência} a teoria da probabilidade é a
+maneira adequada para se tratar de grau de incertezas de proposições
+através de números reais\cited{Cox1946,Cox1963}. De fato, os critérios
+de coerência de Cox nada mais são que um conjunto de axiomas usados para
+formular a teoria de probabilidade e podem ser sintetizados através da
+seguinte frase
+   \footnote{ 
+       Tradução livre de:\textit{ "... the less likely is an event to occur the
+       more likely it is not to occur. The occurrence of both of two events
+       will not be more likely and will generally be less likely than the
+       occurrence of the less likely of the two. But the occurrence of at
+       least one of the events is not less likely and is generally more
+       likely than the occurrence
+   of either.”}
+   }\citep{Cox1946},
+\begin{description}
+    \item 
+    \textit{
+        "... quanto menos verossímil é um evento ocorrer mais verossímil é
+        ele não ocorrer. A ocorrência dos dois eventos não será mais
+        verossímil e geralmente será menos verossímil do que o menos
+        verossímil dos dois. No entanto, a ocorrência de pelo menos um dos
+        eventos não é menos verossímil e é geralmente mais verossímil do
+        que a ocorrência de ambos."
+    }
+\end{description}
+Como já é comum em ciência, sempre é possível questionar a validade ou
+a generalidade de axiomas ou regras, e mesmo essas regras de consistências
+podem ser questionadas ou generalizadas sob certas condições como é evidenciado
+no artigo de Patriota\cite{Patriota2013}. No entanto, é inegável a grande
+generalidade e a aplicabilidade dos conceitos de probabilidade, ainda mais por
+sua conexão clara com medidas experimentais devido sua correspondência com a
+frequência de eventos.
+
+Podemos nos perguntar agora, como podemos inferir a probabilidade de uma
+asserção? Como mostrado por Ariel Caticha em\citep{CatichaA2012} uma
+maneira de se inferir a probabilidade de um evento repeitando as regras de
+coerência de Cox é através maximização da entropia relativa do sistema
+(também conhecida como divergência de Kullback-Leibler). O trabalho de
+Ariel Caticha pode ser visto como uma continuação do trabalho do físico
+E.T. Jaynes\cite{Jaynes2003} que mostra uma conexão mais profunda entre o
+problema de inferência probabilística, Mecânica Estatística e Teoria
+da Informação. Um dos resultados interessantes obtido por Ariel é que
+a inferência Bayesiana que será descrita na próxima seção é um caso
+particular da inferência entrópica proposta por ele e Jaynes.
+
+\section{Aprendizado Bayesiano Online} %#{{{2
+\label{sec:apbayes}
+
+Dado um conjunto de variáveis aleatórias  $D_t = \left( y_0,\ldots,y_{t-1}
+\right)$ e supondo que elas são amostradas de forma independentemente de acordo
+com a seguinte distribuição de probabilidade ou \textit{verosimilhança},
+\begin{align}
+    P(D_t|\theta) = \prod_{i=0}^{t-1} P(y_i|\theta),
+\end{align}
+onde $\theta$ é um vetor de parâmetros desconhecidos que queremos estimar. 
+Pela interpretação Bayesiana de probabilidade, é possível assumir uma
+distribuição probabilidade para eventos onde existe incerteza.
+Pelo teorema de Bayes temos que a densidade de probabilidade do parâmetro $\bm
+\theta$ dado o conhecimento das amostras é
+\begin{align}
+    P(\theta|D_t) = \frac{P(\theta)P(D_t|\theta)}
+        {\int \dd \theta' P(\theta')P(D_t|\theta')}.
+        \label{eq:bayes1}
+\end{align}
+A probabilidade $P(\theta|D_t)$ é chamada de \textit{posteriori},
+já  a quantidade $P(\theta)$ é chamada de \textit{priori} representa
+o conhecimento prévio sobre os parâmetros. Existe uma extensa
+literatura\cite{DeGroot1989} de métodos de estatística dedicados a resolução
+e análise da equação\ref{eq:bayes1}. Neste trabalho nos restringiremos
+ao algoritmo de aprendizado Bayesiano Online proposto por Manfred
+Opper\cited{Opper1996} e que também é discutido de forma mais didática
+em\citep{Opper1998,Solla1998}.
+
+O aprendizado  Bayesiano Online é obtido a pela mudança da distribuição a
+\textit{posteriori} quando um novo exemplo $y_{t + 1}$ é apresentado. Desta
+forma, podemos mostrar que a nova distribuição \textit{posteriori} será o
+produto normalizado entre a antiga \textit{posteriori} e a
+\textit{verosimilhança} do novo exemplo, 
+\begin{align}
+    P(\theta|D_{t+1}) = 
+        \frac{P(\theta|D_t)P(y_t|\theta)}
+        {\int \dd \theta' P(\theta'|D_t)P(y_t|\theta')}.
+    \label{eq:td1}
+\end{align}
+Para uma grande quantidade de dados a resolução da equação
+\ref{eq:td1} pode ser proibitivamente grande, para contornar esse problema
+a \textit{posteriori} $P(\theta|D_t)$ exata pode ser aproximada por uma
+distribuição paramétrica $P(\theta|A_t)$, com isso, o aprendizado online
+é obtido a partir de dois passos:
+\begin{itemize}
+    \item 
+        \textbf{Processa nova informação}: A partir da apresentação de um
+        novo exemplo a \textit{posteriori} é atualizada através da regra
+        de Bayes
+        \begin{align}
+            P(\theta|A_t , y_t) = 
+            \frac{P(\theta|A_t)P(y_t|\theta)}
+            {\int \dd \theta' 
+            P(\theta'|A_t)P(y_t|\theta')}.
+            \label{eq:td2}
+        \end{align}
+    \item
+        \textbf{Projeção no Espaço Paramétrico}: Quando a atualização de
+        Bayes é feita a nova \textit{posteriori} não necessariamente pertence
+        ao espaço paramétrico da distribuição \textit{priore} usada. Para
+        retornarmos ao espaço paramétrico desejado é feito uma projeção
+        da nova \textit{posteriori} nesse espaço através da minimização da
+        divergência de Kullback-Leibler entre as duas distribuições
+        \begin{align}
+            P(\theta|A_t , y_t) 
+            \xrightarrow{\mathbf{KL}} 
+            P(\theta|A_{t + 1}),
+        \end{align}
+        sendo a divergência de Kullback-Leibler entre as duas distribuições
+        é definida por,
+        \begin{align}
+            & KL[ P(\theta|A_t , y_t)||P(\theta|A_{t + 1}) ] \nn
+            &\qquad =  \int \dd \theta P(\theta|A_t , y_t)
+            \log \frac{P(\theta|A_t , y_t)}{P(\theta|A_{t + 1})}.
+            \label{eq:kl1}
+        \end{align}
+\end{itemize}
+
+\subsection{Ansatz Gaussiano} %#{{{3
+\label{sec:AnsatzGaussiano}
+
+% section Ansatz Gaussiano (end)
+Considerando um espaço paramétrico gaussiano, 
+\begin{align}
+    P(\theta|A_t) &= P(\bm \omega |A_t) \nn &=
+        \frac{1}{|2\pi\bm C_t|^{\half}}
+        \exp \left( - \frac{1}{2} \left(\bm \omega - \ovb \omega_t \right)^T
+         \bm C_t^{-1}\left(\bm \omega - \ovb \omega_t \right)\right),
+\end{align}
+a minimização de divergência de Kullback-Leibler \ref{eq:kl1} equivale
+a igualarmos os momentos de ambas as distribuições, como mostraremos na
+secção\ref{sec:passm}. Assim segue, 
+\begin{align}
+    \ovl{\bm \omega}_{t+1} &= 
+        \frac{\int \dd \bm \omega \bm \omega P(\bm \omega|A_t)P(y_t|\bm \omega)} 
+        {\int \dd \bm \omega P(\bm \omega|A_t)P(y_t|\bm \omega)}, \nn
+    \bm C_{t+1} &= \frac{\int \dd \bm \omega 
+        \bm \omega \bm \omega^T P(\bm \omega|A_t)P(y_t|\bm \omega)}
+        {\int \dd \bm \omega P(\bm \omega|A_t)P(y_t|\bm \omega)}
+        -\ovl{\bm \omega}_{t+1}  \ovl{\bm \omega}_{t+1}^T.
+    \label{eq:iter1}
+\end{align}
+
+Fazendo a mudança de variáveis, $\bm \omega = \bm u + \ovl{ \bm \omega}_t$
+e usando a propriedade de densidades gaussianas com média nula,
+\[
+E(xf(x)) = E(x^2)E(f'(x)),
+\label{eq:propg1}
+\]
+e a propriedade, $ \td{f(x + y)}{x} = \td{f(x + y)}{y}$.
+Podemos mostrar que a média e a covariância serão atualizadas de acordo
+com as expressões,
+\begin{align}
+     \ovl{\bm \omega}_{t+1} &= 
+            \ovl{\bm \omega}_t - \bm C_t \pd{V_t}{\ovl{\bm \omega}_t} \nn
+     \bm C_{t+1} &= 
+             \bm C_t 
+             - \bm C_t\pd{^2V_t}{\ovl{\bm \omega}_t\partial\ovl{\bm \omega}_t^T}\bm C_t
+     \label{eq:iter2}
+\end{align}
+onde a função $V_t = -\log \mc E_t$ pode ser interpretada como uma
+energia de aprendizado, que depende da função $\mc E_t$ que é conhecida
+como evidência e é definida por,  
+\begin{align}
+    \mc E_t &= -  E_{\bm u}\left[P(y_t|\ovl{\bm \omega}_t + \bm u) \right], \nn
+      &=  \int\dd \bm u P(\bm u | A_t) P(y_t|\ovl{\bm \omega}_t + \bm u).
+\label{eq:evid1}
+\end{align}
+
+\section{Perceptron Booleano com Ruído Aditivo e Multiplicativo} %#{{{2
+\label{sec:PB} 
+
+Como vimos no apêndice \ref{chap:neuro}, no caso do perceptron booleano os dados
+são sorteados e são escritos na forma $y_t = ( \tau_t, \bm x_t )$ onde $\tau_t$
+é um rotulo, que pode ser binário, ou um números real,  e $ \bm x_t =
+(x_t^1, \ldots, x_t^N) $ é um vetor N-dimensional.
+Considerando que os vetores exemplos são escolhidos independentemente do
+parâmetro $\bm \omega$ teremos que   $P(y|\bm \omega) = P(\tau|\bm \omega, \bm
+x ) P(\bm x )$.  Com isso,  as equações \eqref{eq:iter1}, \eqref{eq:iter2}
+e \eqref{eq:evid1} permaneceram inalteradas exceto que $P(y|\bm \omega)$ será
+substituído por $P(\tau|\bm \omega, \bm x)$.  
+
+Podemos imaginar que existam dois tipos de erros que podem corromper a
+classificação do exemplo, um ruído multiplicativo o outro aditivo. O
+ruído multiplicativo  inverte a classificação $\tau$ do exemplo $\bm x$
+com uma probabilidade conhecida $\epsilon$ de forma que
+\begin{align}
+    p(\tau|\bm \omega, \bm x,\sigma_B) = \epsilon \delta_{(-\sigma_B,\tau)}
+                               + (1-\epsilon) \delta_{(\sigma_B,\tau)}.
+\label{eq:ptau1}
+\end{align}
+Onde, $\sigma_B = \mathrm{sign}(\bm \omega^T\bm x + \eta)$, sendo que $\eta$
+corresponde ao ruído aditivo que corrompe a classificação com um ruído
+gaussiano ($ \eta = \mc N ( 0,\sigma)$). Com isso, podemos reescrever 
+\eqref{eq:ptau1} como, 
+\begin{align}
+    p(\tau|\bm \omega, \bm x,\bm\eta) = \epsilon  + (1-2\epsilon) \Theta\left(
+                     \tau\left( \bm \omega^T \bm x + \eta \right)\right).
+\label{eq:ptau2}
+\end{align}
+Marginalizando \eqref{eq:ptau2} em relação ao ruído aditivo teremos que
+\begin{align}
+    p(\tau|\bm \omega, \bm x) = \epsilon + (1-2\epsilon) 
+        \frac{1}{\sqrt{2\pi\sigma^2}}\int \dd\eta 
+        e^{-\frac{\eta^2}{2\sigma^2} }
+        \Theta\left(\tau\left( \bm \omega^T \bm x + \eta \right)\right).
+\label{eq:ptau3}
+\end{align}
+Com isso, podemos calcular a expressão para a evidência \eqref{eq:evid1}
+\begin{align}
+\mc E & = 
+    \epsilon + (1-2\epsilon) \frac{1}{|2\pi\bm C|^\half\sqrt{2\pi\sigma}}\nn
+    &\int\dd \bm u \dd \eta 
+    e^{-\half \bm u^T \bm C^{-1} \bm u
+    -\frac{\eta^2}{2\sigma^2} }
+    \Theta\left(\tau\ovl{\bm \omega}^T\bm x + \tau\bm u^T\bm x + 
+                                \tau\eta \right).
+\label{eq:evid2}
+\end{align}
+
+Definindo novas variáveis,
+\begin{align}
+\tilde{\bm u}=
+\left(
+\begin{array}{c}
+\bm u \\
+\eta
+\end{array}
+\right),
+\quad
+%
+\tilde{\bm \Sigma}=
+\left(
+\begin{array}{cc}
+\bm C & 0 \\
+0     & \sigma^2
+\end{array}
+\right)    
+\quad\mathrm{e}\quad
+%
+\tilde{\bm x}=
+\left(
+\begin{array}{c}
+\bm x \\
+1
+\end{array}
+\right),
+\end{align}
+logo a expressão \eqref{eq:evid2} poderá ser escrita como 
+
+\begin{align}
+\mc E & = 
+\epsilon + (1-2\epsilon) \frac{1}{|2\pi\bm \Sigma|^\half}
+\int\dd \tilde{\bm u}
+e^{-\half \tilde{\bm u}^T \bm \Sigma^{-1} \tilde{\bm u}}
+\Theta\left(\tau b + \tau \tilde{\bm u}^T \tilde{\bm x} \right),\nn
+ & = 
+\epsilon + (1-2\epsilon)
+\Phi\left( \frac{\tau b}{\lambda}\right),
+\label{eq:ptau3}
+\end{align}
+onde $\lambda^2 = \sigma^2 + |\bm x^T \bm C \bm x|$ e função
+cumulativa\footnote{Para fins computacionais, a função cumulativa
+$\Phi(x)$ da gaussiana $\mc N(0,1)$ pode ser escrita em termos da função
+$\mathrm{erf}(x) = (2/\sqrt{\pi})\int_{-\infty}^x \dd t \exp(-t^2)$ através
+da relação $\Phi(x) = \half(1+\mathrm{erf}(x/\sqrt 2))$} $\Phi(x)$ da
+gaussiana $\mc N(0,1)$,
+\begin{align}
+    \Phi(z) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{z}\dd t e^{-t^2/2}.
+\end{align}
+
+Além  disso, no caso em que a classificação do assunto dada pelo produto
+escalar entre o assunto e o parâmetro a ser estimado ($b_t = \ovl{\bm
+\omega}_t^T\bm x_t$) , ou seja, $\tau=f(b)$, de acordo com a regra da cadeia,
+($\pd{f}{\ovl{\bm \omega}} = \bm x \pd{f}{b}$) as equações de aprendizado
+\eqref{eq:iter2} podem ser rescritas como,
+\begin{align}
+     \ovl{\bm \omega}_{t+1} &= \ovl{\bm \omega}_t - \bm C_t \bm
+        x_t\pd{V_t}{b_t}, \nn
+     \bm C_{t+1} &= 
+     \bm C_t - \bm C_t\bm x_t\bm x_t^T\bm C_t
+        \pd{^2V_t}{b_t^2}.
+     \label{eq:iter3}
+\end{align}
+
+Com isso, recuperamos os resultados obtidos para o aprendizado ótimo do
+perceptron booleano obtidos para ruídos multiplicativos\cite{Kinouchi1992}
+e aditivos\cite{Biehl1995}.
+
+\section{Passagens Matemáticas} %#{{{2
+\label{sec:passm}
+
+\subsection*{Notas de Calculo Matricial} %#{{{3
+\label{sec:NotasdeCalculoMatricial}
+
+Seja  $\bm A $  uma matriz inversível usaremos as seguintes propriedades de
+diferenciabilidade,
+\begin{align}
+    \dd\bm A^{-1} 
+        &= - \bm A^{-1}\dd\bm A \bm A^{-1},\nn
+    \dd \log \det \bm A 
+        &= \tr \left(\bm A^{-1}{\dd \bm A }\right).
+\end{align}
+
+\subsection*{Propriedade \ref{eq:propg1} } %#{{{3
+
+Seja $f_1(x)$ uma distribuição de probabilidade e $h(x)$ uma função bem
+comportada tal que,
+\[
+\lim_{\bm x \to \pm \infty}
+h(\bm x) f_1(\bm x) = 0,
+\]
+segue que,
+\begin{align}
+    0 &= \int \dd \bm x \td{}{\bm x}\left( h(\bm x) f_1(\bm x)\right),\nn
+    0 &= \int \dd \bm x \dd \left( h(\bm x) f_1(\bm x)\right),\nn
+      &= \int \dd \bm x \dd h(\bm x)f_1(\bm x) + \dd f_1(\bm x)h(\bm x),\nn
+      &= E_1\left(\dd h(\bm x)\right)
+         + E_1\left( h(\bm x)
+        \dd \bm x^T \bm\Sigma_1^{-1}(\bm x - \bm \mu_1)\right),\nn
+      &= E_1\left(\td{h(\bm x)}{\bm x}\right)
+         + \bm \Sigma_1^{-1}E_1\left( \bm x h(\bm x) \right)
+         - \bm \Sigma_1^{-1}\bm \mu_1 E_1\left( h(\bm x) \right).
+\end{align}
+No caso em que $f_1(\bm x)$ é uma Gaussiana de média nula obtemos a
+propriedade,
+\begin{align}
+        E\left( \bm x h(\bm x) \right) 
+        = \bm \Sigma_1 E\left(\td{h(\bm x)}{\bm x}\right)
+        = E(\bm x \bm x^T) E\left(\td{h(\bm x)}{\bm x}\right).
+\end{align}
+
+\subsection*{Minimização KL para gaussianas - equação \ref{eq:iter1}} %#{{{3
+
+Seja $g(\bm x)$ uma distribuição de probabilidade qualquer e $f_1(\bm x)$ uma
+distribuição gaussiana dada por 
+\begin{align}
+    f_1(x) = \frac{1}{|2\pi\bm\Sigma_1|^\half}
+        e^{-\half(\bm x - \bm \mu_1)^T \bm \Sigma_1^{-1}(\bm x - \bm \mu_1)}
+\end{align}
+logo a divergência KL entre essas duas distribuições será
+\begin{align}
+    D = \int \dd \bm x g( \bm x ) \log \frac{g( \bm x )}{f_1( \bm x )}
+\end{align}
+Agora, nosso objetivo é calcular os valores dos parâmetros de $f_1(\bm x)$
+que minimizam essa distancia . Primeiramente minimizamos em relação ao
+parâmetro $\bm \mu_1$ ( $\frac{\dd D}{\dd \bm \mu_1} = 0$ ), Dessa forma temos,
+\begin{align}
+      \dd D &= \int \dd \bm x g(\bm x) \dd \log f_1(\bm x );\nn
+      \quad&= -\half\int \dd \bm x g(\bm x) \left(
+                \dd \bm \mu_1^T \bm \Sigma_1^{-1}(\bm x - \bm \mu_1)
+                + (\bm x - \bm \mu_1)^T\bm \Sigma_1^{-1}\dd\bm \mu_1
+                \right);\nn
+      \quad&= 
+            -\int \dd \bm x g(\bm x) 
+            \dd \bm \mu_1^T\bm \Sigma_1^{-1}(\bm x - \bm \mu_1).
+\end{align}
+Assim segue que,
+\begin{align}
+      \bm \mu_1 &= \int \bm x g(\bm x) \dd \bm x, \nn
+              &= E_g(\bm x ).
+      \label{eq:mu1}
+\end{align}
+Minimizando agora a divergência KL em relação à matriz de covariância
+$\bm \Sigma_1$ teremos
+\begin{align}
+      \dd D &= \int \dd \bm x g(\bm x) \dd \log f_1(\bm x ),\nn
+      &= - \half\dd\log |\bm \Sigma_1| -\half\int \dd \bm x g(\bm x) 
+           (\bm x - \bm \mu_1)^T \dd\bm \Sigma_1^{-1}(\bm x -\bm \mu_1),\nn
+      &= \tr \left(\Sigma_1^{-1}\dd\bm \Sigma_1 \right),\nn
+       &\quad -\tr \left(\int \dd \bm x g(\bm x) 
+            (\bm x - \bm \mu_1)^T \bm \Sigma_1^{-1}\dd\bm \Sigma_1
+            \bm \Sigma_1^{-1}(\bm x - \bm \mu_1)\right),\nn
+      &= \tr \left(\Sigma_1^{-1}\dd\bm \Sigma_1\bm \Sigma_1^{-1} 
+       \left(\bm \Sigma_1 - \int \dd \bm x g(\bm x) 
+            (\bm x - \bm \mu_1)(\bm x - \bm \mu_1)^T\right)\right), \nn
+      &= \tr \left(\bm\Sigma_1^{-1}\dd\bm \Sigma_1\bm \Sigma_1^{-1} 
+       \left(\bm \Sigma_1 -  \bm \Sigma_g\right)\right).
+\end{align}
+
+Com isso, usamos o resultado $\mu_1 = E_g(x)$, obtemos que $\bm \Sigma_1 =
+\bm \Sigma_g$.
+
+\subsection*{Minimização KL - equações \ref{eq:iter2} 2 \ref{eq:evid1}} %#{{{3
+
+Definindo $g(\bm x) = h(\bm x)f_0(\bm x- \bm \mu_0)/ Z_h$ onde 
+$Z_h = \int \dd \bm x f_0(\bm x)h(\bm x) = E_0(h (\bm x ))$
+e $f_0(\bm x )$ é uma normal de média $\bm \mu_0$ e covariância $\bm \Sigma_0$
+Segue a partir de \eqref{eq:mu1}, 
+\begin{align}
+      \bm \mu_1 &= \frac{1}{Z_h}
+                \int \bm x h(\bm x)f_0(\bm x -\bm \mu_0) \dd \bm x, \nn
+               &=\bm \mu_0 + \frac{1}{Z_h}
+                \int \bm u h(\bm u + \bm \mu_0)f_0(\bm u) \dd \bm u, \nn
+               &=\bm \mu_0 + \bm \Sigma_0\frac{1}{Z_h}
+                \int \td{}{\bm u} h(\bm u + \bm \mu_0)f_0(\bm u) \dd \bm u, \nn
+               &=\bm \mu_0 + \bm \Sigma_0\frac{1}{Z_h}\td{}{\bm \mu_0}
+                \int h(\bm u + \bm \mu_0)f_0(\bm u) \dd \bm u, \nn
+               &=\bm \mu_0 + \bm \Sigma_0\td{}{\bm \mu_0}\log Z_h.
+      \label{eq:mu1}
+\end{align}
+
+Seja $\bm \mu_1 = \bm \mu_0 + \bm v$ temos agora para a matriz de covariância
+que
+\begin{align}
+    \bm\Sigma_1 &= \frac{1}{Z_h}
+            \int \bm x \bm x^T h(\bm x) f_0(\bm x -\bm \mu_0) \dd \bm x
+                    - \bm \mu_1 \bm \mu_1^T, \nn
+                &= \frac{1}{Z_h}
+                    \int \bm u \bm u^T h(\bm u + \bm \mu_0) f_0(\bm u) \dd \bm u
+                    + \bm \mu_0 \bm \mu_0^T
+                    + \bm \mu_0 \bm v^T
+                    + \bm v \bm \mu_0^T
+                    - \bm \mu_1 \bm \mu_1^T,\nn
+                &= \frac{1}{Z_h}\bm \Sigma_0
+                    \int \td{}{\bm u} \bm u^T h(\bm u + \bm \mu_0) f_0(\bm u) \dd \bm u
+                    - \bm v \bm v^T \nn
+                &= \frac{1}{Z_h}\bm \Sigma_0
+                    \int \left( \bm 1 h(\bm u + \bm \mu_0) + 
+                     \td{}{\bm u} h(\bm u 
+                     + \bm \mu_0)\bm u^T \right)f_0(\bm u) \dd \bm u
+                    - \bm v \bm v^T, \nn
+                &= \bm \Sigma_0 + \frac{1}{Z_h}
+                    \bm \Sigma_0\int\td{}{\bm u} h(\bm u + \bm \mu_0) 
+                    \bm u^T f_0(\bm u) \dd \bm u
+                    - \bm v \bm v^T, \nn
+                &= \bm \Sigma_0 + \frac{1}{Z_h}\bm \Sigma_0\td{}{\bm \mu_0}\int 
+                         h(\bm u + \bm \mu_0) \bm u^T f_0(\bm u) \dd \bm u
+                    - \bm v \bm v^T, \nn
+                &= \bm \Sigma_0 + 
+                    \frac{1}{Z_h}\bm \Sigma_0\td{}{\bm\mu_0}\left(
+                    \int\td{}{\bm u^T} h(\bm u + \bm \mu_0) f_0(\bm u)\dd \bm u
+                    \right)\bm\Sigma_0
+                    - \bm v \bm v^T, \nn
+                &= \bm \Sigma_0 + 
+                   \frac{1}{Z_h}\bm \Sigma_0\td{}{\bm\mu_0}
+                    \left(\td{}{\bm \mu_0^T}  Z_h\right)\bm\Sigma_0
+                    - \bm v \bm v^T, \nn
+                &= \bm \Sigma_0 + 
+                   \bm \Sigma_0\td{^2\log Z_h}{\bm\mu_0\bm\mu_0^T}\bm\Sigma_0.
+\end{align}
+
+
+\subsection*{Integral \ref{eq:ptau3}} %#{{{3
+\label{sec:propriedade}
+
+Dado a integral, 
+\begin{align}
+    f(\bm b, c) &= \frac{1}{\left(2 \pi\right)^\frac{p}{2}}
+        \int \dd \bm x \exp(-\half \bm x^T \bm x)
+        \Theta\left(\bm b \bm x^T - c \right).
+\label{eq:inte1}
+\end{align}
+
+Definindo a transformação de variáveis, $\bm y = \bm  B \bm x $, onde,
+\begin{align}
+\bm B^{-1} = 
+\left(
+\begin{array}{c}
+\bm b/|\bm b| \\ 
+\bm e_2 \\       
+\vdots \\
+\bm e_p
+\end{array}
+\right)
+\end{align}
+e $\{\bm b/|\bm b|, \bm e_2, \ldots, \bm e_p\}$ formam uma base autonormal.
+
+Logo a integral \eqref{eq:inte1} poderá ser escrita em termos da nova variável
+como
+\begin{align}
+    f(\bm b, c) &= \frac{1}{\left(2 \pi\right)^\frac{p}{2}}
+        \int \dd \bm y |\bm B^{-1}|
+        \exp(-\half (\bm B^{-1} \bm y)^T (\bm B^{-1} \bm y))
+        \Theta\left(\bm b (\bm B^{-1}\bm y)^T - c \right),\nn
+     &= \frac{1}{\left(2 \pi\right)^\frac{p}{2}}
+        \int \dd \bm y |\bm B^{-1}|
+        \exp(-\half \bm y ^T (\bm B \bm B^T)^{-1} \bm y)
+        \Theta\left(\bm b \bm b^T y_1/|\bm b | - c \right).
+\label{eq:inte2}
+\end{align}
+Tendo em vista que $|B^{-1}| = 1$ e 
+\begin{align}
+    \bm B \bm B^T = 
+\left(
+\begin{array}{cc}
+   1 & \tilde{\bm 0} \\
+   \tilde{\bm 0} & \bm I 
+\end{array}
+\right),
+\end{align}
+segue,
+\begin{align}
+    f(\bm b, c) &= \frac{1}{\left(2 \pi\right)^\frac{p}{2}}
+        \int \dd y_1 \dd y_2' \ldots \dd y_n'
+        \exp\left(-\half \sum_{i=2}^p y_i' \right)
+        \exp\left(-\frac{y_1^2}{2} \right)
+        \Theta\left(b y_1 - c \right),\nn
+     &= \frac{1}{\left(2 \pi\right)^\frac{p}{2}}
+       (2 \pi)^\frac{p-1}{2} \intf \dd y_1
+        \exp\left(-\frac{y_1^2}{2} \right)
+        \Theta\left(b y_1 - c \right),\nn
+     &= \frac{1}{\left(2 \pi\right)^\frac{p}{2}}
+       (2 \pi)^\frac{p-1}{2} \intf \dd y_1
+        \exp\left(-\frac{y_1^2}{2} \right)
+        \Theta\left(b y_1 - c \right),\nn
+     &= \frac{1}{\left(2 \pi b^2\right)^\half}
+        \intf \dd y' 
+        \exp \left(-\frac{y'^2}{2b^2} \right)
+        \Theta\left( y' - c \right).
+\label{eq:inte3}
+\end{align}
+
