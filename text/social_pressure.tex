@@ -1,0 +1,209 @@
+\chapter{Análise multi cultural}
+
+Uma das perguntas mais importantes que podem ser feita é o quão geral é  a teoria
+de aprendizado moral que desenvolvemos durante a tese, se ela só é valida para
+os Estados Unidos da América, ou se é geral o suficiente para descrever o
+aprendizado moral de sociedades em geral.
+
+Esse tema começou a ser tratado após a conclusão da tese, quando obtivemos o
+conjunto de dados completos do questionário da Teoria dos Fundamento
+Morais\citep{Quest}.
+Como foi visto no apêndice~\ref{sec:rho_delta}, existe uma equivalência
+entre a modelagem Bayesiana do aprendizado moral com a modelagem proposta
+por Caticha e Vicente\citep{Caticha2011a}. O modelo proposto por Caticha e
+vicente tem a vantagem de ser um sistema Hamiltoniano, permitindo assim, que
+seja feito de forma mais fácil uma analise de campo médio.
+
+\section{Campo Médio}
+
+A aproximação de campo médio é feita ao maximizarmos a entropia
+relativa entre uma distribuição de probabilidade do tipo $P_{cm}=\prod_i
+Q_i(\bm \omega_i)$ em relação a distribuição de Gibbs\cite{Opper2001},
+$P_G \propto \exp -\alpha \mc{H}$, onde a entropia relativa entre as duas
+distribuições é dada por,
+\begin{align}
+    S\left[P_{cm}||P_G\right] &= - \int \prod_i d \mu \left(\bm \omega_i\right)
+    \left\{ P_{cm}\log\frac{P_{cm}}{P_G} - \lambda\left(P_{cm} -1\right)\right\}
+    \nn
+    &= -\int d \mu \left(\bm \omega_i\right) Q_i\log Q_i +
+        \lambda Q_i, \nonumber \\
+        &\quad  - \alpha\sum_{\left(i,j\right)}\int d \mu
+        \left(\bm \omega_i\right) d \mu
+\left(\bm \omega_j\right)Q_iQ_jV_{ij} + cte,
+\end{align}
+onde $d\mu(\bm \omega)$ é o elemento de área de uma hiperesfera. A maximização
+da entropia acontece quando $\frac{\delta S\left[Q||P_G\right]}{\delta Q_i}
+= 0$, de onde segue\footnote{No caso do modelo de Ising essa procedimento
+resulta na aproximação de campo médio de Curie-Weiss\citep{Opper2001}},
+\begin{equation}
+Q_i \propto \exp \left( -\alpha \sum_{j \in viz\left(i\right)} \int d
+        \mu \left(\bm{J}_j\right) Q_jV_{ij} \right)\nonumber.
+\end{equation}
+
+Devido ao formato do Hamiltoniano podemos definir os seguintes
+parâmetros de ordem 
+\begin{align}
+m &= \int d \mu \left(\bm \omega_j\right)
+Q_j\bm \omega_j\cdot \mc Z \nonumber \\
+r &= \int d \mu \left(\bm \omega_j\right)
+Q_j|\bm \omega_j\cdot\mc Z |\nonumber
+\end{align}
+de forma que a Hamiltoniana de campo  será dada por
+\[
+\int d \mu \left(\bm \omega_j\right) Q_jV_{ij} = -\frac{1+\delta}{2}h_i m
++\frac{1-\delta}{2}|h_i| r 
+\]
+
+Com isso, a distribuição de probabilidade pela aproximação de campo
+médio será dada por
+\begin{align}
+    P_{cm}\left(\bm \omega |\alpha,\delta, \{m,r\}\right) 
+    &= \prod_i\frac{1}{Z} \exp \alpha 
+    \left( -\frac{1+\delta}{2}h_i m +\frac{1-\delta}{2}|h_i| r\right)\nn
+    &= \prod_i\frac{1}{Z} B(h_i|\delta,k\alpha,m,r)
+\end{align}
+sendo obtido a partir da solução das seguintes equações
+auto consistentes
+\begin{align}
+m &= \frac{1}{Z}\int d \mu\left(\bm \omega\right)
+         B(h|\delta,k\alpha,m,r)h\\ 
+r &= \frac{1}{Z}\int d \mu\left(\bm \omega\right)
+          B(h|\delta,k\alpha,m,r)|h|\\
+Z &=  \int d \mu\left(\bm \omega\right) 
+            B(h|\delta,k\alpha,m,r)
+\end{align}
+Considerando a direção do \textit{Zeitgeist} como o eixo de simetria 
+\begin{equation}
+    P\left(h|\alpha,\delta, \{m,r\}\right) = \int\mu(\bm \omega)
+    \delta(\mc Z \cdot \bm \omega - h ) 
+    Q\left(\bm \omega |\alpha,\delta, \{m,r\}\right) 
+\end{equation}
+
+Experimentalmente estamos interessado na região de parâmetros onde a população
+se organiza com grande probabilidade na direção do \textit{Zeitgeist}, ou seja,
+quando $h_i>0$, para quase todo agente $i$. Nessa situação, temos que $m\approx
+r$, e com isso a distribuição de campo médio será dada por, 
+\begin{equation}
+    P(h|\delta, k \alpha,\{m\}) \approx
+    \frac{\gamma^2}{2} \left(1 - h^2\right) e^{-\gamma (1- h )},
+    \label{eq:pgamma}
+\end{equation}
+onde $\gamma = m \delta k \alpha$.
+
+\subsection{Estimação de máxima verossimilhança} % (fold)
+\label{sub:maxver}
+
+Considerando um conjunto de dados de opinião $D= \{h_1,\ldots,h_n\}$
+independentes e identicamente distribuídos a partir da probabilidade de campo
+médio \eqref{eq:pgamma}, teremos que o logaritmo da verossimilhança para
+esse conjunto de dados será,
+\begin{equation}
+    L(\gamma) = \sum_{i=1}^n P(h_i|\delta, k \alpha,\{m\}) 
+        = \sum_{i=1}^n \log P(h_i|\gamma).
+\end{equation}
+Com isso, podemos estimar o valor do parâmetro $\gamma$ que maximiza a
+probabilidade da amostra ter sido sorteada,
+\begin{align}
+    \frac{d L(\gamma)}{d \gamma} = \sum_i ( -1 + \frac{2}{\gamma} + h_i ) = 0.
+\end{align}
+
+Logo, o valor do parâmetro $\gamma$ que maximiza a verossimilhança é dado por,
+\begin{align}
+    \frac{2}{\gamma} &= 1- \frac{1}{n}\sum_i h_i, \nn
+                     &=  1 - \overline m.
+    \label{eq:gm}
+\end{align}
+
+Assumindo que o número de amostras é muito grande ($n\rightarrow \infty$) pela
+lei dos grandes números\cite{DeGroot1989,Wassermann2003} a média amostral de uma variável
+aleatória tende à esperança dessa variável, com isso, temos que nesse limite,
+$\overline m \rightarrow m $. Lembrando que $\gamma = m \delta k \alpha$,
+obtemos a partir do estimador de máxima verosimilhança em \eqref{eq:gm} que
+\begin{align}
+    m(1-m) = \frac{2}{k\alpha\delta}.
+\end{align}
+Como assumimos que $m$ é estritamente positivo, temos que a opinião média de um
+agente em função do número médio de vizinhos, pressão social e tendencia
+corroborativa na aproximação de campo médio quando $m\approx r$ é 
+\begin{equation}
+    m(k\alpha,\delta) = \frac{1}{2} + \sqrt{\frac{1}{4} +\frac{2}{k\alpha\delta}}.
+\end{equation}
+
+De fato, a qualidade da aproximação de campo médio para a regressão
+dos histogramas de opinião experimentais pode ser verificada pela
+figura~\ref{fig:mf_usa}, onde, em amarelo, é apresentado os histograma das
+opiniões morais de 113 mil respondentes dos Estados Unidos da América com
+diferentes ideologias políticas. Sendo as linhas azuis as distribuições
+de campo médio estimada a partir da maximização da verossimilhança.
+ 
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{Figures/mf_usa}
+\end{center}
+\caption{Em amarelo é apresentado os histograma das opiniões morais para
+grupos de pessoas com diferentes ideologias políticas 113 mil respondentes dos
+Estados Unidos da América. As linhas azuis são as distribuição
+de probabilidade de campo médio estimada a partir da maximização da
+verossimilhança.
+} 
+\label{fig:mf_usa}
+\end{figure}
+                 
+% subsection Estimação de máxima verossimilhaça (end)
+
+\section{Comparação com \textit{Thigtness/Loseness}}
+
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{Figures/mf_br_jp}
+\end{center}
+\caption{Histogramas de opiniões de respondentes do Brasil (figuras de cima)
+    e do Japão (figuras inferiores), para diferentes ideologias
+    políticas. Percebesse que existe uma maior dispersão nas opiniões dos
+    respondentes Brasileiros em relação  aos Japoneses com a mesma ideologia
+    política.
+} 
+\label{fig:}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{Figures/mag_tight}
+\end{center}
+\caption{Opinião média dos respondentes $m$ por ideologia política de cada pais
+em relação ao índice \textit{Tightness/Loseness}. Ao lado da legenda das
+ideologias é apresentado a covariância entre a opinião média e índice
+\textit{Tightness/Loseness}. }
+\label{fig:m_tl}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{Figures/pro_delta_pa}
+\end{center}
+\caption{Na figura acima é apresentado a tendência corroborativa em função
+da filiação política. Na figura abaixo os pontos azuis representam 
+proporção das tendencias corroborativas entre pessoas de ideologias
+politicas consecutivas, na escala liberal conservador, para cada pais. Os
+pontos vermelhos são as medianas das proporções das tendências corroborativas.
+} 
+\label{fig:}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{Figures/beta_tight}
+\end{center}
+\caption{Relação entre a pressão social do modelo de agentes e o \textit{tightness
+score}. As barras de erros foram calculadas a partir de $95\%$ de confiança do
+\textit{bootstrap}. A linha vermelha representa o melhor ajuste linear
+ponderado pelo erros dos pontos, onde a região em azul representa o intervalo de
+de $68\%$ de confiança para essa regressão. A região em cinza é o intervalo de
+predição de $68\%$ da regressão linear. Observa-se claramente que a pressão
+social medida pela teoria cresce com o \textit{tightness score} do pais, sendo
+que as duas medidas apresentão uma correlação de 0.65.}
+\label{fig:}
+\end{figure}
+

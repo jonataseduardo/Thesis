@@ -35,28 +35,37 @@
         \titlepage
     \end{frame}%}}}
 
-    \begin{frame}{Moral}%{{{
-       Correntes filosóficas
+    \begin{frame}{Correntes filosóficas}%{{{
+              
         \begin{itemize}
-            \item Utilitaristas
-            \item Deontológicas
-            \item Virtudes Morais 
-            \item ... 
+            \item <1-> Consequencialistas: Uma atitude é moral dependendo da
+                sua consequência na sociedade.
+            \item <2-> Deontológicas: Atos morais dependem da adesão racional
+                a regras ou deveres.
+            \item <3-> Virtudes Morais: A moral deve ser baseada em cultivar
+                virtudes e evitar vícios. 
         \end{itemize}
     \end{frame}%}}}
     
-    \begin{frame}{Dimensões Morais}%{{{
+    \begin{frame}{Teoria dos Fundamentos Morais}%{{{
         \begin{itemize}
-            \item \textbf{Justiça / Trapaça}
+            \item <1-> Primazia intuitiva nos julgamentos morais.
+            \item <2-> Intuições morais inatas, 
+            \begin{itemize}
+                \item \textbf{Justiça / Trapaça};
 
-            \item \textbf{Cuidado / Violência}
+                \item \textbf{Cuidado / Violência};
 
-            \item \textbf{Lealdade (a grupos)/ Traição}
+                \item \textbf{Lealdade (a grupos)/ Traição};
 
-            \item \textbf{Respeito à autoridade / Subversão} 
+                \item \textbf{Respeito à autoridade / Subversão};
 
-            \item \textbf{Santidade / Degradação} 
-       \end{itemize}
+                \item \textbf{Santidade / Degradação}.
+           \end{itemize}
+       \item <3-> Conservadores e Liberais usam as intuições morais
+           diferentemente.
+        \end{itemize}
+
     \end{frame}%}}}
 
     \begin{frame}{Moral e ideologia política}%{{{
@@ -68,18 +77,52 @@
     \end{frame}%}}}
 
     \begin{frame}{Aprendizado por reforço}%{{{
+
+       Erros são importantes fontes de informação e regulação de processos
+       cognitivos.
+       \begin{itemize}
+           \item<1-> Estudos de potências cerebrais relacionados a eventos.
+               \begin{itemize}
+                   \item<2-> processamento de erro: córtex anterior cingulado
+               \end{itemize}
+           \item <3-> Circuitos de recompensa.
+               \begin{itemize}
+                   \item <4-> Dopamina
+               \end{itemize}
+       \end{itemize}
+    
+    \end{frame}%}}}
+
+    \begin{frame}{Go / No-GO}%{{{
+    \begin{figure}
+        \includegraphics[scale=0.4]{Figures/amodio} 
+        \end{figure}
+    \end{frame} %}}}
+
+    \begin{frame}{Dor por exclusão}%{{{
         \begin{figure}
         \begin{center}
         \includegraphics[scale=0.18]{Figures/dorsocial}
         \end{center}
         \end{figure}
     \end{frame}%}}}
-    
-    \begin{frame}{Go / No-GO}%{{{
-    \begin{figure}
-        \includegraphics[scale=0.4]{Figures/amodio} 
-        \end{figure}
-    \end{frame} %}}}
+
+    \begin{frame}{Ideologia Política}
+        \begin{itemize}
+            \item   Ideologia (Conservadorismo): Motivado por cognição social,
+                \begin{itemize}
+                    \item <1-> Personalidade: autoritárias, dogmáticas,
+                        intolerantes a ambiguidade,
+                    \item <2-> Necessidades epistêmicas e existências
+                        (fechamento, controle de foco, controle de medo).
+                \end{itemize}
+            \item Liberalismo:
+                \begin{itemize}
+                    \item <3-> Traço de personalidade de abertura a
+                        experiência.
+                \end{itemize}
+        \end{itemize}
+    \end{frame}
 
     \begin{frame}{Complexidade e ideologia}%{{{
         \begin{figure}
@@ -97,27 +140,32 @@
 
     \begin{frame}{Modelo}%{{{
        \begin{itemize}
-           \item Matriz moral:\\
+           \item <1-> Matriz moral dos agentes:\\
                  $\bm \omega_i = (\omega_{i 1},\ldots,\omega_{i 5})$
 
-            \item Assuntos discutidos:\\
-                $y_\mu=(\sigma_{j\mu},\bm x_\mu)$, onde \\
-                $\sigma_{j\mu} =  sign(h_{j\mu})$,
-                $h_{j\mu} = \bm \omega_j \cdot \bm x_\mu$
+            \item <2-> Informação discutida:
+                $y_\mu=(\sigma_{j\mu},\bm x_\mu)$,
+                \begin{itemize}
+                    \item assuntos: $\bm x_\mu$
+                    \item classificação: $\sigma_{j\mu} =  sign(h_{j\mu})$,
+                    \item opinião: $h_{j\mu} = \bm \omega_j \cdot \bm x_\mu$
+                \end{itemize}
 
        \end{itemize}
 
     \end{frame}%}}}
 
-    \begin{frame}{Fase 1}%{{{
+    \begin{frame}{Fase 1: Infância dos agentes}%{{{
         \begin{itemize}
-            \item Equações do aprendizado
+            \item <1-> Evolução da matriz moral  
                 \begin{align}
                     \ovl{\bm \omega}_i(t+1) 
                     &= \ovl{\bm \omega}_i(t) - 
                     \sigma_{j\mu} \bm x_\mu C_i(t)\pd{\mathcal E (t)}{z_\mu}; \nn
                     &= \ovl{\bm \omega}_i(t) + \sigma_{j\mu} \bm x_\mu  F(t); 
-                    \label{eq:F1}\\
+                \end{align}
+             \item <2-> Evolução da estratégia cognitiva
+                \begin{align}
                     C_i(t+1) 
                     &= C_i(t) - C_i(t)^2 \pd{^2 \mathcal E (t)}{z_\mu^2}; \nn
                     &= C_i(t) + C_i(t) \pd{F(t)}{z_\mu}.
@@ -143,7 +191,7 @@
        \end{align}
    \end{frame}%}}}
 
-   \begin{frame}{Fase 2}%{{{
+   \begin{frame}{Fase 2: Aprendizado social}%{{{
     \centering
             \textit{Zeitgeist}:\\
                \[
